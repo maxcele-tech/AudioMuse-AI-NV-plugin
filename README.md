@@ -55,7 +55,7 @@ services:
     environment:
       - ND_PLUGINS_ENABLED=true
       - ND_PLUGINS_AUTORELOAD=true
-      - ND_AGENTS=audiomuseai,lastfm,spotify,deezer
+      - ND_AGENTS=audiomuseai,lastfm,deezer
       - ND_DEVARTISTINFOTIMETOLIVE=1s
     volumes:
       - ./data:/data
