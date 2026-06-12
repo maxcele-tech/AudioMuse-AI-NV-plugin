@@ -80,3 +80,10 @@ make package  # -> audiomuseai.ndp
 ```
 
 Full stop.
+
+## **Code Mirror**
+
+[AudioMuse-AI-NV-plugin](https://github.com/NeptuneHub/AudioMuse-AI-NV-plugin) repository code is mirrored here:
+- [https://codeberg.org/NeptuneHub/AudioMuse-AI](https://codeberg.org/NeptuneHub/AudioMuse-AI-NV-plugin)
+  
+DO **NOT** USE MIRROR TO RAISE ISSUE, PR OTHER ACTION DIFFERENT FROM GET THE CODE
