@@ -65,9 +65,26 @@ services:
 - Then you need to put `audiomuseai.ndp` in Navidrome data plugins folder (default: `/data/plugins`).
 - Restart Navidrome, go to UI -> Plugins, enable **AudioMuse-AI**, set **AudioMuse-AI API URL** and other configuration parameter.
 
-> Note: the audiomuseai.npd can be found attached to the release: https://github.com/NeptuneHub/AudioMuse-AI-NV-plugin/releases
+Note:
+> - The audiomuseai.npd can be found attached to the release: https://github.com/NeptuneHub/AudioMuse-AI-NV-plugin/releases.
+> - If you had configured authentication on AudioMuse-AI, you should also to create an apiToken on AudioMuse-AI core container and put in the plugin configuration.
 
 See the official [Navidrome Documentation](https://www.navidrome.org/docs/usage/features/plugins/#managing-plugins-in-the-web-ui) for more information on how the plugin works.
+
+## HOW-TO test
+
+In the AudioMuse-AI integrated UI, use the **Similar Song** functionality on a track.
+
+In the Navidrome Web UI, use **InstantMix** on the same track.
+
+Both actions should generate similar requests in the AudioMuse-AI Flask logs. For the Navidrome request, you should also see `plugin=audiomuseai` in multiple line of the Navidrome logs with no related errors.
+
+If both tests pass, supported third-party clients should work correctly. Any issue on third party client MUST be addressed on their side.
+
+Note:
+> - Different frontends may return a different number of similar songs, depending on their configuration. This plugin does not enforce a default limit.
+> - A 401 Unauthorized error in the Navidrome logs typically indicates that the apiToken is missing or incorrectly configured.
+> - Navidrome must be able to reach the AudioMuse-AI core container. Ensure the plugin is configured with the correct host/IP address. If requests do not appear in the AudioMuse-AI Flask logs, the issue is most likely network connectivity or container routing.
 
 ## HOW-TO build
 
