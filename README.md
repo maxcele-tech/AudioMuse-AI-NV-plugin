@@ -25,6 +25,7 @@ For Mobile app that want to map this functionality they need to implement the `g
 - [Tempus](https://github.com/eddyizm/tempus) - Android opensource mobile frontend, more information here: https://github.com/eddyizm/tempus/issues/410
 - [Symfonium](https://symfonium.app/) - Androind closed source mobile frontend. You need to enable in the configuration `Use similar tracks for Radio Mix`. Additional functionality that use AudioMuse-AI API are actually implemented only using Jellyfin. More information here: https://support.symfonium.app/t/implement-navidrome-audiomuse-ai-plugin-to-symfonium/12238/12
 - [Feishin](https://github.com/jeffvli/feishin/issues/1675) - Web opensource frontend, more information here: https://github.com/jeffvli/feishin/issues/1675
+- [Wavio](https://wavio-app.vercel.app) - Android opensource mobile frontend, more information here: https://github.com/Joel-Mercier/wavio
 
 Other frontnend not in this list could also work by using those API even.
 
