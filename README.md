@@ -46,7 +46,7 @@ Other frontnend not in this list could also work by using those API even.
 > IMPORTANT: Before start we suggest to have the last version of Navidrome, AudioMuse-AI-NV-plugin and AudioMuse-AI core containers. If the version are not aligned, some error could happen. Keep this in mind also for future update.
 
 - The ENV var ND_PLUGINS_ENABLED, ND_PLUGINS_AUTORELOAD and ND_AGENTS are important, assuming that you deploy with docker compose you should use something like this:
-- Order of ND_AGENTS is important. Navidrome will use the first listed agent supporting sonic similarity.
+- The order of ND_AGENTS is important. Navidrome will use the first listed agent supporting sonic similarity.
 
 ```yaml
 version: '3'
