@@ -46,7 +46,6 @@ Other frontnend not in this list could also work by using those API even.
 > IMPORTANT: Before start we suggest to have the last version of Navidrome, AudioMuse-AI-NV-plugin and AudioMuse-AI core containers. If the version are not aligned, some error could happen. Keep this in mind also for future update.
 
 - The ENV var ND_PLUGINS_ENABLED, ND_PLUGINS_AUTORELOAD and ND_AGENTS are important, assuming that you deploy with docker compose you should use something like this:
-- The order of ND_AGENTS is important. Navidrome will use the first listed agent supporting sonic similarity.
 
 ```yaml
 version: '3'
@@ -67,6 +66,7 @@ services:
 
 - Then you need to put `audiomuseai.ndp` in Navidrome data plugins folder (default: `/data/plugins`).
 - Restart Navidrome, go to UI -> Plugins, enable **AudioMuse-AI**, set **AudioMuse-AI API URL** and other configuration parameter.
+- The order of ND_AGENTS is important. Navidrome will use the first listed agent supporting sonic similarity.
 
 Note:
 > - The audiomuseai.npd can be found attached to the release: https://github.com/NeptuneHub/AudioMuse-AI-NV-plugin/releases.
