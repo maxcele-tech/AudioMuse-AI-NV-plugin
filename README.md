@@ -66,6 +66,7 @@ services:
 
 - Then you need to put `audiomuseai.ndp` in Navidrome data plugins folder (default: `/data/plugins`).
 - Restart Navidrome, go to UI -> Plugins, enable **AudioMuse-AI**, set **AudioMuse-AI API URL** and other configuration parameter.
+- The order of ND_AGENTS is important. Navidrome will use the first listed agent supporting sonic similarity.
 
 Note:
 > - The audiomuseai.npd can be found attached to the release: https://github.com/NeptuneHub/AudioMuse-AI-NV-plugin/releases.
