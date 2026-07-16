@@ -358,6 +358,9 @@ func (p *audioMusePlugin) GetSimilarArtists(input metadata.SimilarArtistsRequest
 		if a.ArtistID == "" {
 			continue
 		}
+		if a.ArtistID == input.ID {
+			continue
+		}
 		if seen[a.ArtistID] {
 			continue
 		}
