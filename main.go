@@ -353,7 +353,16 @@ func (p *audioMusePlugin) GetSimilarArtists(input metadata.SimilarArtistsRequest
 		Artists: make([]metadata.ArtistRef, 0, len(artists)),
 	}
 
+	seen := make(map[string]bool)
 	for _, a := range artists {
+		if a.ArtistID == "" {
+			continue
+		}
+		if seen[a.ArtistID] {
+			continue
+		}
+		seen[a.ArtistID] = true
+
 		res.Artists = append(res.Artists, metadata.ArtistRef{
 			ID:   a.ArtistID,
 			Name: a.Artist,
