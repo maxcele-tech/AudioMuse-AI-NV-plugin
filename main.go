@@ -17,6 +17,7 @@ import (
 const (
 	configAPIUrl              = "apiUrl"
 	configAPIToken            = "apiToken"
+	configServer              = "server"
 	configEliminateDuplicates = "eliminateDuplicates"
 	configRadiusSimilarity    = "radiusSimilarity"
 )
@@ -129,6 +130,9 @@ func (p *audioMusePlugin) getAudioMuseSimilarTracks(itemID string, count int) ([
 	params.Set("n", strconv.Itoa(count))
 	params.Set("eliminate_duplicates", strconv.FormatBool(eliminateDuplicates))
 	params.Set("radius_similarity", strconv.FormatBool(radiusSimilarity))
+	if server := getConfigString(configServer, ""); server != "" {
+		params.Set("server", server)
+	}
 
 	apiURL := fmt.Sprintf("%s/api/similar_tracks?%s", apiBaseURL, params.Encode())
 	pdk.Log(pdk.LogInfo, fmt.Sprintf("[AudioMuse] Calling similar_tracks API: %s", apiURL))
@@ -211,6 +215,9 @@ func (p *audioMusePlugin) FindSonicPath(input sonicsimilarity.FindSonicPathReque
 	params.Set("max_steps", strconv.Itoa(count))
 	params.Set("path_fix_size", "false")
 	params.Set("mood_pct", "100")
+	if server := getConfigString(configServer, ""); server != "" {
+		params.Set("server", server)
+	}
 
 	apiURL := fmt.Sprintf("%s/api/find_path?%s", apiBaseURL, params.Encode())
 	pdk.Log(pdk.LogInfo, fmt.Sprintf("[AudioMuse] Calling FindSonicPath API from %s to %s: %s", input.StartSong.ID, input.EndSong.ID, apiURL))

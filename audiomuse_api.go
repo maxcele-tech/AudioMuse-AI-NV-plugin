@@ -33,6 +33,9 @@ func getSimilarArtists(id string, includeComponentMatches bool) ([]SimilarArtist
 	params.Set("artist", id)
 	params.Set("n", strconv.Itoa(artistCount))
 	params.Set("include_component_matches", strconv.FormatBool(includeComponentMatches))
+	if server := getConfigString(configServer, ""); server != "" {
+		params.Set("server", server)
+	}
 
 	apiURL := fmt.Sprintf("%s/api/similar_artists?%s", apiBaseURL, params.Encode())
 	pdk.Log(pdk.LogInfo, fmt.Sprintf("[AudioMuse] Calling GetSimilarArtists API for artist ID %s: %s", id, apiURL))

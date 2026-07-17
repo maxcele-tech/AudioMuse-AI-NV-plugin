@@ -20,6 +20,11 @@
           "title": "API Token",
           "description": "Optional Bearer token for AudioMuse-AI API authentication. Leave blank if not required."
         },
+        "server": {
+          "type": "string",
+          "title": "Server Name",
+          "description": "Server name as configured in AudioMuse-AI multi-server setup (e.g. 'Navidrome'). Leave blank if multi-server is not used; the parameter will not be sent."
+        },
         "artistSimilarCount": {
           "type": "integer",
           "title": "Number of Similar Artists",
@@ -59,6 +64,10 @@
               "options": {
                 "format": "password"
               }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/server"
             }
           ]
         },
