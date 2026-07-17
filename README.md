@@ -68,9 +68,10 @@ services:
 - Restart Navidrome, go to UI -> Plugins, enable **AudioMuse-AI**, set **AudioMuse-AI API URL** and other configuration parameter.
 - The order of ND_AGENTS is important. Navidrome will use the first listed agent supporting sonic similarity.
 
-Note:
+> [!IMPORTANT]
 > - The audiomuseai.npd can be found attached to the release: https://github.com/NeptuneHub/AudioMuse-AI-NV-plugin/releases.
-> - If you had configured authentication on AudioMuse-AI, you should also to create an apiToken on AudioMuse-AI core container and put in the plugin configuration.
+> - If you had configured authentication on AudioMuse-AI, you should also to create an 'API Token' on AudioMuse-AI core container and put in the plugin configuration.
+> - If AudioMuse-Ai has multiple Music Server configured, you need to configure the 'Server Name' to match the one in AudioMuse-AI
 
 See the official [Navidrome Documentation](https://www.navidrome.org/docs/usage/features/plugins/#managing-plugins-in-the-web-ui) for more information on how the plugin works.
 
