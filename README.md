@@ -85,7 +85,7 @@ Both actions should generate similar requests in the AudioMuse-AI Flask logs. Fo
 
 If both tests pass, supported third-party clients should work correctly. Any issue on third party client MUST be addressed on their side.
 
-Note:
+> [!NOTE]
 > - Different frontends may return a different number of similar songs, depending on their configuration. This plugin does not enforce a default limit.
 > - A 401 Unauthorized error in the Navidrome logs typically indicates that the apiToken is missing or incorrectly configured.
 > - Navidrome must be able to reach the AudioMuse-AI core container. Ensure the plugin is configured with the correct host/IP address. If requests do not appear in the AudioMuse-AI Flask logs, the issue is most likely network connectivity or container routing.
