@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -121,26 +120,17 @@ func (p *audioMusePlugin) GetSimilarSongsByTrack(input metadata.SimilarSongsByTr
 	}
 
 	// Convert to Navidrome SongRef format preserving order
-	songs := make([]metadata.SongRef, 0, len(tracks))
-	for _, track := range tracks {
-		songs = append(songs, metadata.SongRef{
-			ID:     regexp.QuoteMeta(track.ItemID),
-			Name:   regexp.QuoteMeta(track.Title),
-			Artist: regexp.QuoteMeta(track.Author),
-			Album:  regexp.QuoteMeta(track.Album),
-		})
-		pdk.Log(pdk.LogDebug, fmt.Sprintf("[AudioMuse] Appending '%s' with Artist: '%s' from Album: '%s' and ID: '%s'", track.Title, track.Author, track.Album, track.ItemID))
-	}
+	songs := p.convertToSongRef(&tracks)
 
 	pdk.Log(pdk.LogInfo, fmt.Sprintf("[AudioMuse] Returning %d songs to Navidrome", len(songs)))
 
 	return &metadata.SimilarSongsResponse{Songs: songs}, nil
 }
 
-func (p *audioMusePlugin) convertToSongRef(input metadata.SimilarSongsByTrackRequest, tracks []audioMuseTrackResponse) []metadata.SongRef {
-	songs := make([]metadata.SongRef, 0, len(tracks))
+func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []metadata.SongRef {
+	songs := make([]metadata.SongRef, 0, len(*tracks))
 	// Try to get Navidrome Item ID if possible
-	for _, track := range tracks {
+	for _, track := range *tracks {
 		query := url.QueryEscape(fmt.Sprintf("%s %s %s", track.Title, track.Author, track.Album))
 		res, err := host.SubsonicAPICall(
 			fmt.Sprintf("search3?query=%s", query),
@@ -162,8 +152,10 @@ func (p *audioMusePlugin) convertToSongRef(input metadata.SimilarSongsByTrackReq
 			}
 			original := fmt.Sprintf("Original: '%s' with Artist: '%s' from Album: '%s'", track.Title, track.Author, track.Album)
 			songSearch := fmt.Sprintf("Searched: Appending '%s' with Artist: '%s' from Album: '%s' and ID: '%s'", track.Title, track.Author, track.Album)
-			pdk.Log(pdk.LogDebug, fmt.Sprintf("Couldn't match: %s %s", original, songSearch))
+			pdk.Log(pdk.LogInfo, fmt.Sprintf("Couldn't match: %s %s", original, songSearch))
 		}
+		// Fallback
+		appendSong(&songs, track)
 	}
 	return songs
 }
