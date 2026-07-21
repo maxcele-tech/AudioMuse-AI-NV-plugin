@@ -107,6 +107,9 @@
     "config": {
       "reason": "To read plugin configuration in Navidrome UI"
     },
+    "subsonicapi": {
+      "reason": "To find song IDs"
+    },
     "http": {
       "reason": "To call AudioMuse-AI API for similar tracks",
       "requiredHosts": [
