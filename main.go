@@ -153,7 +153,7 @@ func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []m
 		if err := json.NewDecoder(strings.NewReader(res)).Decode(&response); err != nil {
 			appendSong(&songs, track)
 			pdk.Log(pdk.LogError, fmt.Sprintf(
-				"[AudioMuse] Couldn't decode JSON %s : %v",
+				"[AudioMuse] Could not decode JSON %s : %v",
 				res,
 				err,
 			))
@@ -161,21 +161,19 @@ func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []m
 		}
 
 		found := false
-		original := fmt.Sprintf("Original: '%s' with Artist: '%s' from Album: '%s'", track.Title, track.Author, track.Album)
 		for _, song := range response.SubsonicResponse.SearchResult3.Songs {
-			songSearch := fmt.Sprintf("Searched: Appending '%s' with Artist: '%s' from Album: '%s' and ID: '%s'", track.Title, track.Author, track.Album)
 			if song.Title == track.Title && song.Artist == track.Author && song.Album == track.Album {
 				track.ItemID = song.ID
-				pdk.Log(pdk.LogInfo, fmt.Sprintf("Match found: %s", songSearch))
+				pdk.Log(pdk.LogDebug, fmt.Sprintf("ID found for: %s", track.Title))
 				appendSong(&songs, track)
 				found = true
-				continue
+				break
 			}
-			pdk.Log(pdk.LogInfo, fmt.Sprintf("Couldn't match: %s %s", original, songSearch))
+			pdk.Log(pdk.LogDebug, fmt.Sprintf("Search result did not match: %s", track.Title))
 		}
 		// Fallback
 		if !found {
-			pdk.Log(pdk.LogInfo, fmt.Sprintf("No match for: %s", original))
+			pdk.Log(pdk.LogError, fmt.Sprintf("Could not get ID for: %s", track.Title))
 			appendSong(&songs, track)
 		}
 	}
@@ -184,7 +182,7 @@ func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []m
 
 func appendSong(songs *[]metadata.SongRef, track audioMuseTrackResponse) {
 	original := fmt.Sprintf("Original: '%s' with Artist: '%s' from Album: '%s'", track.Title, track.Author, track.Album)
-	pdk.Log(pdk.LogInfo, fmt.Sprintf("Appending Song: %s", original))
+	pdk.Log(pdk.LogDebug, fmt.Sprintf("Appending Song: %s", original))
 	*songs = append((*songs), metadata.SongRef{ // Fallback behavior
 		ID:     track.ItemID,
 		Name:   track.Title,
