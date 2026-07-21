@@ -56,9 +56,9 @@ type subsonicSearchResponse struct {
 				Title  string `json:"title"`
 				Artist string `json:"artist"`
 				Album  string `json:"album"`
-			}
-		}
-	}
+			} `json:: "song"`
+		} `json:"searchResult3`
+	} `json:"subsonic-response"`
 }
 
 type audioMusePathResponse struct {
