@@ -53,7 +53,7 @@ type subsonicSearchResponse struct {
 		SearchResult3 struct {
 			Songs []struct {
 				ID     string `json:"id"`
-				Title  string `json:"Title"`
+				Title  string `json:"title"`
 				Artist string `json:"artist"`
 				Album  string `json:"album"`
 			}
@@ -151,23 +151,30 @@ func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []m
 		var response subsonicSearchResponse
 		if err := json.NewDecoder(strings.NewReader(res)).Decode(&response); err != nil {
 			appendSong(&songs, track)
+			pdk.Log(pdk.LogError, fmt.Sprintf(
+				"[AudioMuse] Couldn't decode JSON %s : %v",
+				res,
+				err,
+			))
 			continue
 		}
 
 		found := false
+		original := fmt.Sprintf("Original: '%s' with Artist: '%s' from Album: '%s'", track.Title, track.Author, track.Album)
 		for _, song := range response.SubsonicResponse.SearchResult3.Songs {
+			songSearch := fmt.Sprintf("Searched: Appending '%s' with Artist: '%s' from Album: '%s' and ID: '%s'", track.Title, track.Author, track.Album)
 			if song.Title == track.Title && song.Artist == track.Author && song.Album == track.Album {
 				track.ItemID = song.ID
+				pdk.Log(pdk.LogInfo, fmt.Sprintf("Match found: %s", songSearch))
 				appendSong(&songs, track)
 				found = true
 				continue
 			}
-			original := fmt.Sprintf("Original: '%s' with Artist: '%s' from Album: '%s'", track.Title, track.Author, track.Album)
-			songSearch := fmt.Sprintf("Searched: Appending '%s' with Artist: '%s' from Album: '%s' and ID: '%s'", track.Title, track.Author, track.Album)
 			pdk.Log(pdk.LogInfo, fmt.Sprintf("Couldn't match: %s %s", original, songSearch))
 		}
 		// Fallback
 		if !found {
+			pdk.Log(pdk.LogInfo, fmt.Sprintf("No match for: %s", original))
 			appendSong(&songs, track)
 		}
 	}
