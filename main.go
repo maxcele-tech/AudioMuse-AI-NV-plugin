@@ -108,10 +108,10 @@ func (p *audioMusePlugin) GetSimilarSongsByTrack(input metadata.SimilarSongsByTr
 	songs := make([]metadata.SongRef, 0, len(tracks))
 	for _, track := range tracks {
 		songs = append(songs, metadata.SongRef{
-			ID:     track.ItemID,
-			Name:   track.Title,
-			Artist: track.Author,
-			Album:  track.Album,
+			ID:     url.QueryEscape(ItemID),
+			Name:   url.QueryEscape(track.Title),
+			Artist: url.QueryEscape(track.Author),
+			Album:  url.QueryEscape(track.Album),
 		})
 		pdk.Log(pdk.LogDebug, fmt.Sprintf("[AudioMuse] Appending '%s' with Artist: '%s' from Album: '%s' and ID: '%s'", track.Title, track.Author, track.Album, track.ItemID)) 
 	}
