@@ -129,11 +129,13 @@ func (p *audioMusePlugin) GetSimilarSongsByTrack(input metadata.SimilarSongsByTr
 
 func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []metadata.SongRef {
 	songs := make([]metadata.SongRef, 0, len(*tracks))
+	users, _ := host.UsersGetUsers()
+	username := users[0].UserName
 	// Try to get Navidrome Item ID if possible
 	for _, track := range *tracks {
 		query := url.QueryEscape(fmt.Sprintf("%s %s %s", track.Title, track.Author, track.Album))
 		res, err := host.SubsonicAPICall(
-			fmt.Sprintf("search3?query=%s", query),
+			fmt.Sprintf("search3?u=%s&query=%s", username, query),
 		)
 		if err != nil {
 			pdk.Log(pdk.LogError, fmt.Sprintf(
