@@ -107,6 +107,9 @@
     "config": {
       "reason": "To read plugin configuration in Navidrome UI"
     },
+    "users": {
+      "reason": "Access user information"
+    },
     "subsonicapi": {
       "reason": "To find song IDs"
     },
