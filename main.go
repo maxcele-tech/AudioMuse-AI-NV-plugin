@@ -108,7 +108,7 @@ func (p *audioMusePlugin) GetSimilarSongsByTrack(input metadata.SimilarSongsByTr
 	songs := make([]metadata.SongRef, 0, len(tracks))
 	for _, track := range tracks {
 		songs = append(songs, metadata.SongRef{
-			ID:     url.QueryEscape(ItemID),
+			ID:     url.QueryEscape(track.ItemID),
 			Name:   url.QueryEscape(track.Title),
 			Artist: url.QueryEscape(track.Author),
 			Album:  url.QueryEscape(track.Album),
