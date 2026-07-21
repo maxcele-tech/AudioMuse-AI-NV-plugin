@@ -133,7 +133,7 @@ func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []m
 	username := users[0].UserName
 	// Try to get Navidrome Item ID if possible
 	for _, track := range *tracks {
-		query := url.QueryEscape(fmt.Sprintf("%s", track.Title))
+		query := fmt.Sprintf("%s", track.Title)
 		res, err := host.SubsonicAPICall(
 			fmt.Sprintf("search3?u=%s&query=%s", username, query),
 		)
@@ -148,6 +148,7 @@ func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []m
 			appendSong(&songs, track)
 			continue
 		}
+		pdk.Log(pdk.LogInfo, fmt.Sprintf("Got Response: %s", res))
 		var response subsonicSearchResponse
 		if err := json.NewDecoder(strings.NewReader(res)).Decode(&response); err != nil {
 			appendSong(&songs, track)
