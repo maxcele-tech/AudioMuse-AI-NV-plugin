@@ -136,6 +136,14 @@ func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []m
 			fmt.Sprintf("search3?query=%s", query),
 		)
 		if err != nil {
+			pdk.Log(pdk.LogError, fmt.Sprintf(
+				"[AudioMuse] Subsonic search failed for '%s %s %s': %v",
+				track.Title,
+				track.Author,
+				track.Album,
+				err,
+			))
+			appendSong(&songs, track)
 			continue
 		}
 		var response subsonicSearchResponse
@@ -144,10 +152,12 @@ func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []m
 			continue
 		}
 
+		found := false
 		for _, song := range response.SubsonicResponse.SearchResult3.Songs {
 			if song.Title == track.Title && song.Artist == track.Author && song.Album == track.Album {
 				track.ItemID = song.ID
 				appendSong(&songs, track)
+				found = true
 				continue
 			}
 			original := fmt.Sprintf("Original: '%s' with Artist: '%s' from Album: '%s'", track.Title, track.Author, track.Album)
@@ -155,12 +165,16 @@ func (p *audioMusePlugin) convertToSongRef(tracks *[]audioMuseTrackResponse) []m
 			pdk.Log(pdk.LogInfo, fmt.Sprintf("Couldn't match: %s %s", original, songSearch))
 		}
 		// Fallback
-		appendSong(&songs, track)
+		if !found {
+			appendSong(&songs, track)
+		}
 	}
 	return songs
 }
 
 func appendSong(songs *[]metadata.SongRef, track audioMuseTrackResponse) {
+	original := fmt.Sprintf("Original: '%s' with Artist: '%s' from Album: '%s'", track.Title, track.Author, track.Album)
+	pdk.Log(pdk.LogInfo, fmt.Sprintf("Appending Song: %s", original))
 	*songs = append((*songs), metadata.SongRef{ // Fallback behavior
 		ID:     track.ItemID,
 		Name:   track.Title,
