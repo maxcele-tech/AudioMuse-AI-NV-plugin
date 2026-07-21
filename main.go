@@ -114,7 +114,9 @@ func authHeaders() map[string]string {
 func (p *audioMusePlugin) GetSimilarSongsByTrack(input metadata.SimilarSongsByTrackRequest) (*metadata.SimilarSongsResponse, error) {
 	pdk.Log(pdk.LogInfo, fmt.Sprintf("[AudioMuse] GetSimilarSongsByTrack called for track ID: %s, Name: %s, Artist: %s", input.ID, input.Name, input.Artist))
 
-	tracks, err := p.getAudioMuseSimilarTracks(input.ID, int(input.Count))
+	extraTracks := int((float64(input.Count) * 0.5)) + 10
+	queryCount := int(input.Count) + extraTracks
+	tracks, err := p.getAudioMuseSimilarTracks(input.ID, queryCount)
 	if err != nil {
 		return nil, err
 	}
