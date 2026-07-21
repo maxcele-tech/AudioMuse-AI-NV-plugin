@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"slices"
 	"strconv"
+	"strings"
 
 	"audiomuse-navidrome-plugin/sonicsimilarity"
 
@@ -46,6 +47,19 @@ type audioMuseTrackResponse struct {
 	Author   string  `json:"author"`
 	Album    string  `json:"album"`
 	Distance float64 `json:"distance"`
+}
+
+type subsonicSearchResponse struct {
+	SubsonicResponse struct {
+		SearchResult3 struct {
+			Songs []struct {
+				ID     string `json:"id"`
+				Title  string `json:"Title"`
+				Artist string `json:"artist"`
+				Album  string `json:"album"`
+			}
+		}
+	}
 }
 
 type audioMusePathResponse struct {
@@ -125,15 +139,42 @@ func (p *audioMusePlugin) GetSimilarSongsByTrack(input metadata.SimilarSongsByTr
 
 func (p *audioMusePlugin) convertToSongRef(input metadata.SimilarSongsByTrackRequest, tracks []audioMuseTrackResponse) []metadata.SongRef {
 	songs := make([]metadata.SongRef, 0, len(tracks))
+	// Try to get Navidrome Item ID if possible
 	for _, track := range tracks {
-		_, err := host.SubsonicAPICall(
-			fmt.Sprintf("search3?query=", track.Title, track.Author, track.Album),
+		query := url.QueryEscape(fmt.Sprintf("%s %s %s", track.Title, track.Author, track.Album))
+		res, err := host.SubsonicAPICall(
+			fmt.Sprintf("search3?query=%s", query),
 		)
 		if err != nil {
 			continue
 		}
+		var response subsonicSearchResponse
+		if err := json.NewDecoder(strings.NewReader(res)).Decode(&response); err != nil {
+			appendSong(&songs, track)
+			continue
+		}
+
+		for _, song := range response.SubsonicResponse.SearchResult3.Songs {
+			if song.Title == track.Title && song.Artist == track.Author && song.Album == track.Album {
+				track.ItemID = song.ID
+				appendSong(&songs, track)
+				continue
+			}
+			original := fmt.Sprintf("Original: '%s' with Artist: '%s' from Album: '%s'", track.Title, track.Author, track.Album)
+			songSearch := fmt.Sprintf("Searched: Appending '%s' with Artist: '%s' from Album: '%s' and ID: '%s'", track.Title, track.Author, track.Album)
+			pdk.Log(pdk.LogDebug, fmt.Sprintf("Couldn't match: %s %s", original, songSearch))
+		}
 	}
 	return songs
+}
+
+func appendSong(songs *[]metadata.SongRef, track audioMuseTrackResponse) {
+	*songs = append((*songs), metadata.SongRef{ // Fallback behavior
+		ID:     track.ItemID,
+		Name:   track.Title,
+		Artist: track.Author,
+		Album:  track.Album,
+	})
 }
 
 func (p *audioMusePlugin) getAudioMuseSimilarTracks(itemID string, count int) ([]audioMuseTrackResponse, error) {
