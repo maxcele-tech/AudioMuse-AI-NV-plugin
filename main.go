@@ -113,6 +113,7 @@ func (p *audioMusePlugin) GetSimilarSongsByTrack(input metadata.SimilarSongsByTr
 			Artist: track.Author,
 			Album:  track.Album,
 		})
+		pdk.Log(pdk.LogDebug, fmt.Sprintf("[AudioMuse] Appending '%s' with Artist: '%s' from Album: '%s' and ID: '%s'", track.Title, track.Author, track.Album, track.ItemID)) 
 	}
 
 	pdk.Log(pdk.LogInfo, fmt.Sprintf("[AudioMuse] Returning %d songs to Navidrome", len(songs)))
