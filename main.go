@@ -4,13 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"regexp"
 	"slices"
 	"strconv"
+
+	"audiomuse-navidrome-plugin/sonicsimilarity"
 
 	"github.com/navidrome/navidrome/plugins/pdk/go/host"
 	"github.com/navidrome/navidrome/plugins/pdk/go/metadata"
 	"github.com/navidrome/navidrome/plugins/pdk/go/pdk"
-	"audiomuse-navidrome-plugin/sonicsimilarity"
 )
 
 // Configuration keys (must match manifest.json)
@@ -108,17 +110,30 @@ func (p *audioMusePlugin) GetSimilarSongsByTrack(input metadata.SimilarSongsByTr
 	songs := make([]metadata.SongRef, 0, len(tracks))
 	for _, track := range tracks {
 		songs = append(songs, metadata.SongRef{
-			ID:     url.QueryEscape(track.ItemID),
-			Name:   url.QueryEscape(track.Title),
-			Artist: url.QueryEscape(track.Author),
-			Album:  url.QueryEscape(track.Album),
+			ID:     regexp.QuoteMeta(track.ItemID),
+			Name:   regexp.QuoteMeta(track.Title),
+			Artist: regexp.QuoteMeta(track.Author),
+			Album:  regexp.QuoteMeta(track.Album),
 		})
-		pdk.Log(pdk.LogDebug, fmt.Sprintf("[AudioMuse] Appending '%s' with Artist: '%s' from Album: '%s' and ID: '%s'", track.Title, track.Author, track.Album, track.ItemID)) 
+		pdk.Log(pdk.LogDebug, fmt.Sprintf("[AudioMuse] Appending '%s' with Artist: '%s' from Album: '%s' and ID: '%s'", track.Title, track.Author, track.Album, track.ItemID))
 	}
 
 	pdk.Log(pdk.LogInfo, fmt.Sprintf("[AudioMuse] Returning %d songs to Navidrome", len(songs)))
 
 	return &metadata.SimilarSongsResponse{Songs: songs}, nil
+}
+
+func (p *audioMusePlugin) convertToSongRef(input metadata.SimilarSongsByTrackRequest, tracks []audioMuseTrackResponse) []metadata.SongRef {
+	songs := make([]metadata.SongRef, 0, len(tracks))
+	for _, track := range tracks {
+		_, err := host.SubsonicAPICall(
+			fmt.Sprintf("search3?query=", track.Title, track.Author, track.Album),
+		)
+		if err != nil {
+			continue
+		}
+	}
+	return songs
 }
 
 func (p *audioMusePlugin) getAudioMuseSimilarTracks(itemID string, count int) ([]audioMuseTrackResponse, error) {
